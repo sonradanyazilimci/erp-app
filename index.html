@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Yönetim Sistemi - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .module-card.disabled:hover {
+            transform: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        .module-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .module-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .module-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-development {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Pulse animasyonu aktif modüller için */
+        .module-card.active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                box-shadow: 0 8px 32px rgba(52, 152, 219, 0.3);
+            }
+            100% {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 ERP Yönetim Sistemi</h1>
+            <p>Tüm iş süreçlerinizi tek platformda yönetin</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">14</div>
+                <div class="stat-label">Toplam Modül</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number">10</div>
+                <div class="stat-label">Aktif Modül</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔧</div>
+                <div class="stat-number">4</div>
+                <div class="stat-label">Geliştirme Aşamasında</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">1</div>
+                <div class="stat-label">Aktif Kullanıcı</div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <!-- Aktif Modüller -->
+            <a href="stok.html" class="module-card active">
+                <div class="module-icon">📦</div>
+                <div class="module-title">Stok Yönetimi (Depo)</div>
+                <div class="module-description">Ürün stoklarını takip edin, depo hareketlerini yönetin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="satin-alma.html" class="module-card active">
+                <div class="module-icon">🛒</div>
+                <div class="module-title">Satın Alma Yönetimi</div>
+                <div class="module-description">Tedarikçi ilişkilerini yönetin, satın alma süreçlerini optimize edin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="satis-dagitim.html" class="module-card active">
+                <div class="module-icon">💰</div>
+                <div class="module-title">Satış ve Dağıtım</div>
+                <div class="module-description">Satış süreçlerini yönetin, dağıtım ağınızı optimize edin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="finans-muhasebe.html" class="module-card active">
+                <div class="module-icon">💳</div>
+                <div class="module-title">Finans ve Muhasebe</div>
+                <div class="module-description">Mali işlemlerinizi takip edin, muhasebe süreçlerini otomatikleştirin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="cari-hesap.html" class="module-card active">
+                <div class="module-icon">📋</div>
+                <div class="module-title">Cari Hesap Takibi</div>
+                <div class="module-description">Müşteri ve tedarikçi hesaplarını detaylı olarak takip edin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="ik.html" class="module-card active">
+                <div class="module-icon">👥</div>
+                <div class="module-title">İnsan Kaynakları (İK)</div>
+                <div class="module-description">Personel yönetimi, bordro ve özlük işlemlerini yürütün.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="uretim.html" class="module-card active">
+                <div class="module-icon">🏭</div>
+                <div class="module-title">Üretim Yönetimi</div>
+                <div class="module-description">Üretim süreçlerini planlayın ve takip edin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <!-- YENİ EKLENEN MODÜLLER -->
+            <a href="kalite-kontrol.html" class="module-card active">
+                <div class="module-icon">🔍</div>
+                <div class="module-title">Kalite Kontrol</div>
+                <div class="module-description">Ürün kalitesini kontrol edin, kalite süreçlerini yönetin ve raporlayın.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <a href="proje-yonetimi.html" class="module-card active">
+                <div class="module-icon">📊</div>
+                <div class="module-title">Proje Yönetimi</div>
+                <div class="module-description">Projeleri planlayın, takip edin ve ekip çalışmalarını koordine edin.</div>
+                <span class="module-status status-active">Aktif</span>
+            </a>
+
+            <div class="module-card" onclick="openModule('dashboard')">
+                <div class="module-icon">📈</div>
+                <div class="module-title">Raporlama ve Dashboard</div>
+                <div class="module-description">Tüm iş süreçlerinizi tek ekranda görüntüleyin ve analiz edin.</div>
+                <span class="module-status status-active">Aktif (Mevcut Sayfa)</span>
+            </div>
+
+            <!-- Geliştirme Aşamasındaki Modüller -->
+            <div class="module-card disabled">
+                <div class="module-icon">🚚</div>
+                <div class="module-title">Lojistik ve Kargo</div>
+                <div class="module-description">Sevkiyat süreçlerini yönetin, kargo takibi yapın.</div>
+                <span class="module-status status-development">Geliştiriliyor</span>
+            </div>
+
+            <div class="module-card disabled">
+                <div class="module-icon">📱</div>
+                <div class="module-title">CRM (Müşteri İlişkileri)</div>
+                <div class="module-description">Müşteri ilişkilerini güçlendirin, satış fırsatlarını takip edin.</div>
+                <span class="module-status status-development">Geliştiriliyor</span>
+            </div>
+
+            <div class="module-card disabled">
+                <div class="module-icon">🔧</div>
+                <div class="module-title">Bakım ve Onarım</div>
+                <div class="module-description">Ekipman bakımlarını planlayın, arıza takibi yapın.</div>
+                <span class="module-status status-development">Geliştiriliyor</span>
+            </div>
+
+            <div class="module-card disabled">
+                <div class="module-icon">📄</div>
+                <div class="module-title">Belge Yönetimi</div>
+                <div class="module-description">Tüm belgelerinizi dijital ortamda organize edin ve yönetin.</div>
+                <span class="module-status status-development">Geliştiriliyor</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 ERP Yönetim Sistemi. Tüm hakları saklıdır.</p>
+            <p>Versiyon 2.1.0 - Son Güncelleme: 01 Temmuz 2025</p>
+        </div>
+    </div>
+
+    <!-- Bildirim -->
+    <div class="notification" id="notification">
+        Hoş geldiniz! ERP sisteminiz hazır.
+    </div>
+
+    <script>
+        // Sayfa yüklendiğinde bildirim göster
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('notification').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('notification').classList.remove('show');
+                }, 3000);
+            }, 1000);
+        });
+
+        // Geliştirme aşamasındaki modüller için tıklama engelleme
+        function openModule(moduleName) {
+            if (moduleName === 'dashboard') {
+                showNotification('Zaten dashboard sayfasındasınız!', 'info');
+            } else {
+                showNotification(`${moduleName} modülü geliştirme aşamasında!`, 'warning');
+            }
+        }
+
+        // Bildirim gösterme fonksiyonu
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            
+            // Renk ayarla
+            switch(type) {
+                case 'success':
+                    notification.style.background = '#27ae60';
+                    break;
+                case 'warning':
+                    notification.style.background = '#f39c12';
+                    break;
+                case 'error':
+                    notification.style.background = '#e74c3c';
+                    break;
+                default:
+                    notification.style.background = '#3498db';
+            }
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modül kartlarına tıklama olayları
+        document.querySelectorAll('.module-card.disabled').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const title = this.querySelector('.module-title').textContent;
+                showNotification(`${title} modülü henüz hazır değil!`, 'warning');
+            });
+        });
+
+        // Klavye kısayolları
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + H ile ana sayfaya dön
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                showNotification('Zaten ana sayfadasınız!', 'info');
+            }
+            
+            // Ctrl + 1-9 ile modüllere hızlı erişim
+            if (e.ctrlKey && e.key >= '1' && e.key <= '9') {
+                e.preventDefault();
+                const moduleIndex = parseInt(e.key) - 1;
+                const activeModules = document.querySelectorAll('.module-card.active a, .module-card.active[href]');
+                
+                if (activeModules[moduleIndex]) {
+                    window.location.href = activeModules[moduleIndex].href;
+                } else {
+                    showNotification(`Modül ${e.key} bulunamadı!`, 'warning');
+                }
+            }
+        });
+
+        // Sayfa performansı için lazy loading
+        const moduleCards = document.querySelectorAll('.module-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        moduleCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Modül durumu kontrolü
+        function checkModuleStatus() {
+            const activeModules = document.querySelectorAll('.module-card.active').length;
+            const developmentModules = document.querySelectorAll('.module-card.disabled').length;
+            
+            console.log(`Aktif Modüller: ${activeModules}`);
+            console.log(`Geliştirme Aşamasında: ${developmentModules}`);
+            
+            // İstatistikleri güncelle
+            document.querySelector('.stat-number').textContent = activeModules + developmentModules;
+            document.querySelectorAll('.stat-number')[1].textContent = activeModules;
+            document.querySelectorAll('.stat-number')[2].textContent = developmentModules;
+        }
+
+        // Sayfa yüklendiğinde modül durumunu kontrol et
+        document.addEventListener('DOMContentLoaded', checkModuleStatus);
+    </script>
+</body>
+</html>

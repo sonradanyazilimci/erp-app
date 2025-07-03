@@ -1,0 +1,2638 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP - Finans ve Muhasebe Yönetimi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-left h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1f618d);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(149, 165, 166, 0.2);
+            color: #2c3e50;
+            border: 2px solid rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(149, 165, 166, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .positive {
+            color: #27ae60 !important;
+        }
+
+        .negative {
+            color: #e74c3c !important;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .transactions-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box, .filter-select {
+            padding: 10px 15px;
+            border: 2px solid rgba(149, 165, 166, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-box:focus, .filter-select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .transactions-table th,
+        .transactions-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(149, 165, 166, 0.2);
+        }
+
+        .transactions-table th {
+            background: rgba(52, 152, 219, 0.1);
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .transactions-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .transaction-type {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .type-income {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .type-expense {
+            background: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .type-transfer {
+            background: #cce5ff;
+            color: #0066cc;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-container, .accounts-container, .reports-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(149, 165, 166, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(149, 165, 166, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        .account-item:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .account-info h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .account-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .account-balance {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .close {
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid rgba(149, 165, 166, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #7f8c8d;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 200px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin: 15px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+            color: white;
+            font-weight: bold;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .invoice-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .invoice-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .budget-progress {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .budget-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #f39c12, #e74c3c);
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .transactions-table {
+                font-size: 0.9rem;
+            }
+            
+            .transactions-table th,
+            .transactions-table td {
+                padding: 10px 8px;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .search-box, .filter-select {
+                width: 100%;
+            }
+
+            .invoice-header {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>💰 Finans ve Muhasebe Yönetimi</h1>
+                <p>Mali işlemler, hesaplar ve finansal raporları yönetin</p>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-primary" onclick="openTransactionModal()">
+                    ➕ Yeni İşlem
+                </button>
+                <button class="btn btn-secondary" onclick="openAccountModal()">
+                    🏦 Hesap Ekle
+                </button>
+                <button class="btn btn-warning" onclick="openInvoiceModal()">
+                    📄 Fatura Oluştur
+                </button>
+                <a href="dashboard.html" class="btn btn-secondary">
+                    🏠 Dashboard'a Dön
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">💳</div>
+                <div class="stat-number" id="totalBalance">₺0</div>
+                <div class="stat-label">Toplam Bakiye</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-number positive" id="totalIncome">₺0</div>
+                <div class="stat-label">Toplam Gelir</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📉</div>
+                <div class="stat-number negative" id="totalExpense">₺0</div>
+                <div class="stat-label">Toplam Gider</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💹</div>
+                <div class="stat-number" id="netProfit">₺0</div>
+                <div class="stat-label">Net Kar/Zarar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="monthlyRevenue">₺0</div>
+                <div class="stat-label">Aylık Ciro</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="transactions-container">
+                <div class="table-header">
+                    <h2>Mali İşlemler</h2>
+                    <div class="filter-controls">
+                        <input type="text" class="search-box" placeholder="🔍 İşlem ara..." id="searchInput" onkeyup="searchTransactions()">
+                        <select class="filter-select" id="typeFilter" onchange="filterTransactions()">
+                            <option value="">Tüm İşlemler</option>
+                            <option value="income">Gelir</option>
+                            <option value="expense">Gider</option>
+                            <option value="transfer">Transfer</option>
+                        </select>
+                        <input type="month" class="filter-select" id="monthFilter" onchange="filterTransactions()">
+                    </div>
+                </div>
+                
+                <table class="transactions-table" id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Açıklama</th>
+                            <th>Kategori</th>
+                            <th>Hesap</th>
+                            <th>Tür</th>
+                            <th>Tutar</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <!-- Dinamik olarak doldurulacak -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sidebar">
+                <div class="accounts-container">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Hesaplar</h3>
+                    <div id="accountsList">
+                        <!-- Dinamik olarak doldurulacak -->
+                    </div>
+                </div>
+
+                <div class="reports-container">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Finansal Raporlar</h3>
+                    
+                    <div class="tabs">
+                        <button class="tab active" onclick="showTab('cashflow')">Nakit Akışı</button>
+                        <button class="tab" onclick="showTab('budget')">Bütçe</button>
+                        <button class="tab" onclick="showTab('profit')">Kar/Zarar</button>
+                    </div>
+
+                    <div id="cashflow" class="tab-content active">
+                        <div class="chart-container">
+                            📊 Nakit Akışı Grafiği
+                        </div>
+                        <p><strong>Bu Ay Giriş:</strong> <span id="monthlyIncome" class="positive">₺0</span></p>
+                        <p><strong>Bu Ay Çıkış:</strong> <span id="monthlyExpense" class="negative">₺0</span></p>
+                        <p><strong>Net Akış:</strong> <span id="netCashflow">₺0</span></p>
+                    </div>
+
+                    <div id="budget" class="tab-content">
+                        <div class="chart-container">
+                            📈 Bütçe Takibi
+                        </div>
+                        <div id="budgetItems">
+                            <!-- Bütçe kalemleri buraya gelecek -->
+                        </div>
+                    </div>
+
+                    <div id="profit" class="tab-content">
+                        <div class="chart-container">
+                            💹 Kar/Zarar Analizi
+                        </div>
+                        <p><strong>Brüt Kar:</strong> <span id="grossProfit">₺0</span></p>
+                        <p><strong>Operasyonel Giderler:</strong> <span id="operationalExpenses">₺0</span></p>
+                        <p><strong>Net Kar:</strong> <span id="netProfitDetail">₺0</span></p>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Hızlı İşlemler</h3>
+                    
+                    <button class="btn btn-primary" onclick="openTransactionModal()" style="width: 100%; margin-bottom: 10px;">
+                        ➕ Yeni Mali İşlem
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="openAccountModal()" style="width: 100%; margin-bottom: 10px;">
+                        🏦 Hesap Ekle
+                    </button>
+                    
+                    <button class="btn btn-warning" onclick="openInvoiceModal()" style="width: 100%; margin-bottom: 10px;">
+                        📄 Fatura Oluştur
+                    </button>
+                    
+                    <button class="btn btn-success" onclick="exportFinancialReport()" style="width: 100%; margin-bottom: 10px;">
+                        📊 Finansal Rapor
+                    </button>
+                    
+                    <button class="btn btn-danger" onclick="openBudgetModal()" style="width: 100%;">
+                        🎯 Bütçe Planla
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- İşlem Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="transactionModalTitle">Yeni Mali İşlem</h2>
+                <span class="close" onclick="closeTransactionModal()">&times;</span>
+            </div>
+            
+            <form id="transactionForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>İşlem Türü *</label>
+                        <select id="transactionType" required onchange="updateTransactionForm()">
+                            <option value="">Seçiniz...</option>
+                            <option value="income">Gelir</option>
+                            <option value="expense">Gider</option>
+                            <option value="transfer">Transfer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tarih *</label>
+                        <input type="date" id="transactionDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama *</label>
+                    <input type="text" id="transactionDescription" required placeholder="İşlem açıklaması">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="transactionCategory">
+                            <option value="">Seçiniz...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hesap *</label>
+                        <select id="transactionAccount" required>
+                            <option value="">Hesap seçiniz...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="transferSection" style="display: none;">
+                    <div class="form-group">
+                        <label>Hedef Hesap *</label>
+                        <select id="targetAccount">
+                            <option value="">Hedef hesap seçiniz...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Tutar *</label>
+                        <input type="number" id="transactionAmount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Para Birimi</label>
+                        <select id="transactionCurrency">
+                            <option value="TRY">₺ Türk Lirası</option>
+                            <option value="USD">$ Amerikan Doları</option>
+                            <option value="EUR">€ Euro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notlar</label>
+                    <textarea id="transactionNotes" placeholder="Ek notlar..." rows="3"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        ✅ İşlemi Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeTransactionModal()" style="flex: 1;">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hesap Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="accountModalTitle">Yeni Hesap Ekle</h2>
+                <span class="close" onclick="closeAccountModal()">&times;</span>
+            </div>
+            
+            <form id="accountForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Hesap Adı *</label>
+                        <input type="text" id="accountName" required placeholder="Hesap adını giriniz">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hesap Türü *</label>
+                        <select id="accountType" required>
+                            <option value="">Seçiniz...</option>
+                            <option value="cash">Nakit</option>
+                            <option value="bank">Banka Hesabı</option>
+                            <option value="credit">Kredi Kartı</option>
+                            <option value="investment">Yatırım</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Başlangıç Bakiyesi</label>
+                        <input type="number" id="initialBalance" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Para Birimi</label>
+                        <select id="accountCurrency">
+                            <option value="TRY">₺ Türk Lirası</option>
+                            <option value="USD">$ Amerikan Doları</option>
+                            <option value="EUR">€ Euro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="accountDescription" placeholder="Hesap açıklaması..." rows="3"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        ✅ Hesabı Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAccountModal()" style="flex: 1;">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fatura Modal -->
+    <div id="invoiceModal" class="modal">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2>Fatura Oluştur</h2>
+                <span class="close" onclick="closeInvoiceModal()">&times;</span>
+            </div>
+            
+            <form id="invoiceForm">
+                <div class="invoice-container">
+                    <div class="invoice-header">
+                        <div>
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">Fatura Bilgileri</h3>
+                            <div class="form-group">
+                                <label>Fatura No</label>
+                                <input type="text" id="invoiceNumber" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Fatura Tarihi</label>
+                                <input type="date" id="invoiceDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Vade Tarihi</label>
+                                <input type="date" id="dueDate">
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">Müşteri Bilgileri</h3>
+                            <div class="form-group">
+                                <label>Müşteri</label>
+                                <select id="invoiceCustomer" required>
+                                    <option value="">Müşteri seçiniz...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fatura Türü</label>
+                                <select id="invoiceType">
+                                    <option value="sales">Satış Faturası</option>
+                                    <option value="service">Hizmet Faturası</option>
+                                    <option value="purchase">Alış Faturası</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #2c3e50; margin: 20px 0;">Fatura Kalemleri</h3>
+                    <div id="invoiceItems">
+                        <!-- Fatura kalemleri buraya eklenecek -->
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addInvoiceItem()" style="margin: 10px 0;">
+                        ➕ Kalem Ekle
+                    </button>
+
+                    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 20px;">
+                        <div class="form-group">
+                            <label>Notlar</label>
+                            <textarea id="invoiceNotes" placeholder="Fatura notları..." rows="4"></textarea>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Ara Toplam:</span>
+                                <span id="invoiceSubtotal">₺0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>KDV (%18):</span>
+                                <span id="invoiceVat">₺0.00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; border-top: 2px solid #ddd; padding-top: 10px;">
+                                <span>Toplam:</span>
+                                <span id="invoiceTotal">₺0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        ✅ Faturayı Kaydet
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="previewInvoice()" style="flex: 1;">
+                        👁️ Önizleme
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeInvoiceModal()" style="flex: 1;">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bütçe Modal -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Bütçe Planlaması</h2>
+                <span class="close" onclick="closeBudgetModal()">&times;</span>
+            </div>
+            
+            <form id="budgetForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Bütçe Adı *</label>
+                        <input type="text" id="budgetName" required placeholder="Bütçe adını giriniz">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dönem *</label>
+                        <select id="budgetPeriod" required>
+                            <option value="">Seçiniz...</option>
+                            <option value="monthly">Aylık</option>
+                            <option value="quarterly">Üç Aylık</option>
+                            <option value="yearly">Yıllık</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Başlangıç Tarihi</label>
+                        <input type="date" id="budgetStartDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bitiş Tarihi</label>
+                        <input type="date" id="budgetEndDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="budgetCategory">
+                        <option value="marketing">Pazarlama</option>
+                        <option value="operations">Operasyon</option>
+                        <option value="hr">İnsan Kaynakları</option>
+                        <option value="it">Bilgi İşlem</option>
+                        <option value="general">Genel Giderler</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Planlanan Tutar *</label>
+                        <input type="number" id="budgetAmount" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Uyarı Eşiği (%)</label>
+                        <input type="number" id="budgetThreshold" min="0" max="100" value="80" placeholder="80">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="budgetDescription" placeholder="Bütçe açıklaması..." rows="3"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        ✅ Bütçeyi Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeBudgetModal()" style="flex: 1;">
+                        ❌ İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bildirim -->
+    <div class="notification" id="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Veri depolama
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+        let invoices = JSON.parse(localStorage.getItem('invoices')) || [];
+        let budgets = JSON.parse(localStorage.getItem('budgets')) || [];
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let editingTransactionId = null;
+        let editingAccountId = null;
+
+        // Kategoriler
+        const categories = {
+            income: [
+                'Satış Gelirleri', 'Hizmet Gelirleri', 'Faiz Gelirleri', 'Kira Gelirleri', 
+                'Yatırım Gelirleri', 'Diğer Gelirler'
+            ],
+            expense: [
+                'Ofis Giderleri', 'Pazarlama', 'Personel Maaşları', 'Kira', 'Elektrik/Su/Gaz',
+                'İletişim', 'Ulaşım', 'Yemek', 'Malzeme Alımı', 'Vergi/Harç', 'Diğer Giderler'
+            ],
+            transfer: ['Hesap Transferi', 'Yatırım', 'Kredi Ödemesi']
+        };
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            loadTransactionsTable();
+            loadAccountsList();
+            updateStats();
+            updateReports();
+            
+            // Form submit olayları
+            document.getElementById('transactionForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveTransaction();
+            });
+
+            document.getElementById('accountForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveAccount();
+            });
+
+            document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveInvoice();
+            });
+
+            document.getElementById('budgetForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveBudget();
+            });
+
+            // Bugünün tarihini varsayılan olarak ayarla
+            document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('budgetStartDate').value = new Date().toISOString().split('T')[0];
+            
+            // Ay filtresi için bu ayı ayarla
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            document.getElementById('monthFilter').value = currentMonth;
+        });
+
+        // Başlangıç verilerini yükle
+        function initializeData() {
+            if (accounts.length === 0) {
+                accounts = [
+                    {
+                        id: 1,
+                        name: 'Ana Kasa',
+                        type: 'cash',
+                        balance: 25000,
+                        currency: 'TRY',
+                        description: 'Şirket ana kasası',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: 'İş Bankası Vadesiz',
+                        type: 'bank',
+                        balance: 150000,
+                        currency: 'TRY',
+                        description: 'İş bankası ticari hesap',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        name: 'Garanti BBVA USD',
+                        type: 'bank',
+                        balance: 5000,
+                        currency: 'USD',
+                        description: 'Döviz hesabı',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        name: 'Şirket Kredi Kartı',
+                        type: 'credit',
+                        balance: -8500,
+                        currency: 'TRY',
+                        description: 'Kurumsal kredi kartı',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+            }
+
+            if (transactions.length === 0) {
+                transactions = [
+                    {
+                        id: 1,
+                        date: '2025-07-01',
+                        description: 'Müşteri ödemesi - ABC Şirketi',
+                        category: 'Satış Gelirleri',
+                        accountId: 2,
+                        type: 'income',
+                        amount: 45000,
+                        currency: 'TRY',
+                        notes: 'Fatura No: F-2025-001',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        date: '2025-06-30',
+                        description: 'Ofis kirası - Temmuz',
+                        category: 'Kira',
+                        accountId: 2,
+                        type: 'expense',
+                        amount: 12000,
+                        currency: 'TRY',
+                        notes: 'Aylık ofis kirası',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        date: '2025-06-29',
+                        description: 'Personel maaşları',
+                        category: 'Personel Maaşları',
+                        accountId: 2,
+                        type: 'expense',
+                        amount: 85000,
+                        currency: 'TRY',
+                        notes: 'Haziran ayı maaşları',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        date: '2025-06-28',
+                        description: 'Pazarlama kampanyası',
+                        category: 'Pazarlama',
+                        accountId: 4,
+                        type: 'expense',
+                        amount: 8500,
+                        currency: 'TRY',
+                        notes: 'Google Ads ve sosyal medya',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 5,
+                        date: '2025-06-27',
+                        description: 'Hizmet geliri - XYZ Ltd.',
+                        category: 'Hizmet Gelirleri',
+                        accountId: 1,
+                        type: 'income',
+                        amount: 15000,
+                        currency: 'TRY',
+                        notes: 'Danışmanlık hizmeti',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+            }
+
+            if (budgets.length === 0) {
+                budgets = [
+                    {
+                        id: 1,
+                        name: 'Pazarlama Bütçesi',
+                        period: 'monthly',
+                        startDate: '2025-07-01',
+                        endDate: '2025-07-31',
+                        category: 'marketing',
+                        plannedAmount: 25000,
+                        spentAmount: 8500,
+                        threshold: 80,
+                        description: 'Aylık pazarlama giderleri',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        name: 'Operasyonel Giderler',
+                        period: 'monthly',
+                        startDate: '2025-07-01',
+                        endDate: '2025-07-31',
+                        category: 'operations',
+                        plannedAmount: 50000,
+                        spentAmount: 12000,
+                        threshold: 75,
+                        description: 'Kira, elektrik, su vb.',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('budgets', JSON.stringify(budgets));
+            }
+        }
+
+        // İşlemler tablosunu yükle
+        function loadTransactionsTable() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+
+            transactions.forEach((transaction, index) => {
+                const account = accounts.find(a => a.id === transaction.accountId);
+                const accountName = account ? account.name : 'Bilinmeyen Hesap';
+                const typeInfo = getTransactionTypeInfo(transaction.type);
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${formatDate(transaction.date)}</td>
+                    <td><strong>${transaction.description}</strong></td>
+                    <td>${transaction.category || '-'}</td>
+                    <td>${accountName}</td>
+                    <td><span class="transaction-type ${typeInfo.class}">${typeInfo.text}</span></td>
+                    <td class="${transaction.type === 'income' ? 'positive' : transaction.type === 'expense' ? 'negative' : ''}">
+                        <strong>${formatCurrency(transaction.amount, transaction.currency)}</strong>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="btn btn-primary btn-small" onclick="viewTransaction(${index})" title="Görüntüle">👁️</button>
+                            <button class="btn btn-warning btn-small" onclick="editTransaction(${index})" title="Düzenle">✏️</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteTransaction(${index})" title="Sil">🗑️</button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        // Hesaplar listesini yükle
+        function loadAccountsList() {
+            const container = document.getElementById('accountsList');
+            container.innerHTML = '';
+
+            if (accounts.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">Henüz hesap eklenmemiş</p>';
+                return;
+            }
+
+            accounts.forEach((account, index) => {
+                const accountDiv = document.createElement('div');
+                accountDiv.className = 'account-item';
+                accountDiv.innerHTML = `
+                    <div class="account-info">
+                        <h4>${account.name}</h4>
+                        <p>${getAccountTypeText(account.type)} - ${account.currency}</p>
+                    </div>
+                    <div>
+                        <div class="account-balance ${account.balance >= 0 ? 'positive' : 'negative'}">
+                            ${formatCurrency(account.balance, account.currency)}
+                        </div>
+                        <div style="display: flex; gap: 5px; margin-top: 5px;">
+                            <button class="btn btn-warning btn-small" onclick="editAccount(${index})" title="Düzenle">✏️</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteAccount(${index})" title="Sil">🗑️</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(accountDiv);
+            });
+
+            // Hesap seçeneklerini güncelle
+            loadAccountOptions();
+        }
+
+        // Hesap seçeneklerini yükle
+        function loadAccountOptions() {
+            const selects = ['transactionAccount', 'targetAccount'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Hesap seçiniz...</option>';
+                    
+                    accounts.forEach(account => {
+                        const option = document.createElement('option');
+                        option.value = account.id;
+                        option.textContent = `${account.name} (${formatCurrency(account.balance, account.currency)})`;
+                        select.appendChild(option);
+                    });
+                }
+            });
+
+            // Müşteri seçeneklerini yükle
+            const customerSelect = document.getElementById('invoiceCustomer');
+            if (customerSelect && customers.length > 0) {
+                customerSelect.innerHTML = '<option value="">Müşteri seçiniz...</option>';
+                customers.forEach(customer => {
+                    const option = document.createElement('option');
+                    option.value = customer.id;
+                    option.textContent = customer.name;
+                    customerSelect.appendChild(option);
+                });
+            }
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            const totalBalance = accounts.reduce((sum, account) => {
+                if (account.currency === 'TRY') {
+                    return sum + account.balance;
+                } else if (account.currency === 'USD') {
+                    return sum + (account.balance * 32); // Basit kur hesabı
+                } else if (account.currency === 'EUR') {
+                    return sum + (account.balance * 35); // Basit kur hesabı
+                }
+                return sum;
+            }, 0);
+
+            const totalIncome = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            const totalExpense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            const netProfit = totalIncome - totalExpense;
+
+            // Bu ayın işlemleri
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyRevenue = transactions
+                .filter(t => t.date.startsWith(currentMonth) && t.type === 'income')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            document.getElementById('totalBalance').textContent = formatCurrency(totalBalance, 'TRY');
+            document.getElementById('totalIncome').textContent = formatCurrency(totalIncome, 'TRY');
+            document.getElementById('totalExpense').textContent = formatCurrency(totalExpense, 'TRY');
+            document.getElementById('monthlyRevenue').textContent = formatCurrency(monthlyRevenue, 'TRY');
+            
+            const netProfitElement = document.getElementById('netProfit');
+            netProfitElement.textContent = formatCurrency(netProfit, 'TRY');
+            netProfitElement.className = `stat-number ${netProfit >= 0 ? 'positive' : 'negative'}`;
+        }
+
+        // Raporları güncelle
+        function updateReports() {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            
+            const monthlyIncome = transactions
+                .filter(t => t.date.startsWith(currentMonth) && t.type === 'income')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            const monthlyExpense = transactions
+                .filter(t => t.date.startsWith(currentMonth) && t.type === 'expense')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            const netCashflow = monthlyIncome - monthlyExpense;
+
+            document.getElementById('monthlyIncome').textContent = formatCurrency(monthlyIncome, 'TRY');
+            document.getElementById('monthlyExpense').textContent = formatCurrency(monthlyExpense, 'TRY');
+            
+            const netCashflowElement = document.getElementById('netCashflow');
+            netCashflowElement.textContent = formatCurrency(netCashflow, 'TRY');
+            netCashflowElement.className = netCashflow >= 0 ? 'positive' : 'negative';
+
+            // Kar/Zarar detayları
+            const grossProfit = transactions
+                .filter(t => t.type === 'income' && t.category === 'Satış Gelirleri')
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            const operationalExpenses = transactions
+                .filter(t => t.type === 'expense' && ['Kira', 'Personel Maaşları', 'Ofis Giderleri'].includes(t.category))
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * (t.currency === 'USD' ? 32 : 35)), 0);
+
+            document.getElementById('grossProfit').textContent = formatCurrency(grossProfit, 'TRY');
+            document.getElementById('operationalExpenses').textContent = formatCurrency(operationalExpenses, 'TRY');
+            document.getElementById('netProfitDetail').textContent = formatCurrency(grossProfit - operationalExpenses, 'TRY');
+
+            // Bütçe durumunu güncelle
+            updateBudgetDisplay();
+        }
+
+        // Bütçe görünümünü güncelle
+        function updateBudgetDisplay() {
+            const container = document.getElementById('budgetItems');
+            container.innerHTML = '';
+
+            budgets.forEach(budget => {
+                const percentage = budget.plannedAmount > 0 ? (budget.spentAmount / budget.plannedAmount) * 100 : 0;
+                const isOverBudget = percentage > 100;
+                const isWarning = percentage > budget.threshold;
+                
+                const budgetDiv = document.createElement('div');
+                budgetDiv.className = 'budget-item';
+                budgetDiv.innerHTML = `
+                    <div>
+                        <strong>${budget.name}</strong>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;">
+                            ${formatCurrency(budget.spentAmount, 'TRY')} / ${formatCurrency(budget.plannedAmount, 'TRY')}
+                        </div>
+                        <div class="budget-progress">
+                            <div class="budget-progress-bar" style="width: ${Math.min(percentage, 100)}%; background: ${isOverBudget ? '#e74c3c' : isWarning ? '#f39c12' : '#27ae60'};"></div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: ${isOverBudget ? '#e74c3c' : isWarning ? '#f39c12' : '#27ae60'};">
+                            %${percentage.toFixed(1)}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(budgetDiv);
+            });
+        }
+
+        // İşlem modal açma
+        function openTransactionModal() {
+            editingTransactionId = null;
+            document.getElementById('transactionModalTitle').textContent = 'Yeni Mali İşlem';
+            document.getElementById('transactionForm').reset();
+            document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('transactionCurrency').value = 'TRY';
+            document.getElementById('transferSection').style.display = 'none';
+            updateTransactionForm();
+            document.getElementById('transactionModal').style.display = 'block';
+        }
+
+        // İşlem modal kapatma
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').style.display = 'none';
+            editingTransactionId = null;
+        }
+
+        // Hesap modal açma
+        function openAccountModal() {
+            editingAccountId = null;
+            document.getElementById('accountModalTitle').textContent = 'Yeni Hesap Ekle';
+            document.getElementById('accountForm').reset();
+            document.getElementById('accountCurrency').value = 'TRY';
+            document.getElementById('accountModal').style.display = 'block';
+        }
+
+        // Hesap modal kapatma
+        function closeAccountModal() {
+            document.getElementById('accountModal').style.display = 'none';
+            editingAccountId = null;
+        }
+
+        // Fatura modal açma
+        function openInvoiceModal() {
+            document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+            document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('invoiceItems').innerHTML = '';
+            addInvoiceItem();
+            document.getElementById('invoiceModal').style.display = 'block';
+        }
+
+        // Fatura modal kapatma
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').style.display = 'none';
+        }
+
+                // Bütçe modal açma
+        function openBudgetModal() {
+            document.getElementById('budgetForm').reset();
+            document.getElementById('budgetStartDate').value = new Date().toISOString().split('T')[0];
+            
+            // Bitiş tarihini bir ay sonra ayarla
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + 1);
+            document.getElementById('budgetEndDate').value = endDate.toISOString().split('T')[0];
+            
+            document.getElementById('budgetModal').style.display = 'block';
+        }
+
+        // Bütçe modal kapatma
+        function closeBudgetModal() {
+            document.getElementById('budgetModal').style.display = 'none';
+        }
+
+        // İşlem formu güncelleme
+        function updateTransactionForm() {
+            const type = document.getElementById('transactionType').value;
+            const categorySelect = document.getElementById('transactionCategory');
+            const transferSection = document.getElementById('transferSection');
+            
+            // Kategori seçeneklerini güncelle
+            categorySelect.innerHTML = '<option value="">Seçiniz...</option>';
+            if (categories[type]) {
+                categories[type].forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            }
+
+            // Transfer bölümünü göster/gizle
+            transferSection.style.display = type === 'transfer' ? 'block' : 'none';
+        }
+
+        // Fatura numarası oluştur
+        function generateInvoiceNumber() {
+            const year = new Date().getFullYear();
+            const invoiceCount = invoices.length + 1;
+            return `F-${year}-${invoiceCount.toString().padStart(3, '0')}`;
+        }
+
+        // Fatura kalemi ekle
+        function addInvoiceItem() {
+            const container = document.getElementById('invoiceItems');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'invoice-item-row';
+            itemDiv.style.cssText = 'display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center;';
+            
+            itemDiv.innerHTML = `
+                <input type="text" placeholder="Ürün/Hizmet açıklaması" class="item-description" onchange="calculateInvoiceTotal()">
+                <input type="number" placeholder="Miktar" min="1" class="item-quantity" value="1" onchange="calculateInvoiceTotal()">
+                <input type="number" placeholder="Birim fiyat" min="0" step="0.01" class="item-price" onchange="calculateInvoiceTotal()">
+                <input type="number" placeholder="Toplam" class="item-total" readonly>
+                <button type="button" class="btn btn-danger btn-small" onclick="removeInvoiceItem(this)">❌</button>
+            `;
+            container.appendChild(itemDiv);
+            calculateInvoiceTotal();
+        }
+
+        // Fatura kalemi sil
+        function removeInvoiceItem(button) {
+            if (document.querySelectorAll('.invoice-item-row').length > 1) {
+                button.parentElement.remove();
+                calculateInvoiceTotal();
+            } else {
+                showNotification('En az bir kalem bulunmalıdır!', 'warning');
+            }
+        }
+
+        // Fatura toplamını hesapla
+        function calculateInvoiceTotal() {
+            const itemRows = document.querySelectorAll('.invoice-item-row');
+            let subtotal = 0;
+
+            itemRows.forEach(row => {
+                const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                const itemTotal = quantity * price;
+                
+                row.querySelector('.item-total').value = itemTotal.toFixed(2);
+                subtotal += itemTotal;
+            });
+
+            const vatAmount = subtotal * 0.18; // %18 KDV
+            const total = subtotal + vatAmount;
+
+            document.getElementById('invoiceSubtotal').textContent = formatCurrency(subtotal, 'TRY');
+            document.getElementById('invoiceVat').textContent = formatCurrency(vatAmount, 'TRY');
+            document.getElementById('invoiceTotal').textContent = formatCurrency(total, 'TRY');
+        }
+
+        // İşlem kaydet
+        function saveTransaction() {
+            const transactionData = {
+                date: document.getElementById('transactionDate').value,
+                description: document.getElementById('transactionDescription').value,
+                category: document.getElementById('transactionCategory').value,
+                accountId: parseInt(document.getElementById('transactionAccount').value),
+                type: document.getElementById('transactionType').value,
+                amount: parseFloat(document.getElementById('transactionAmount').value),
+                currency: document.getElementById('transactionCurrency').value,
+                notes: document.getElementById('transactionNotes').value,
+                createdAt: new Date().toISOString()
+            };
+
+            // Transfer işlemi için hedef hesap
+            if (transactionData.type === 'transfer') {
+                const targetAccountId = parseInt(document.getElementById('targetAccount').value);
+                if (!targetAccountId || targetAccountId === transactionData.accountId) {
+                    showNotification('Lütfen farklı bir hedef hesap seçiniz!', 'error');
+                    return;
+                }
+                transactionData.targetAccountId = targetAccountId;
+            }
+
+            if (!transactionData.accountId || !transactionData.amount || transactionData.amount <= 0) {
+                showNotification('Lütfen tüm gerekli alanları doldurunuz!', 'error');
+                return;
+            }
+
+            // Hesap bakiyelerini güncelle
+            updateAccountBalances(transactionData);
+
+            if (editingTransactionId !== null) {
+                transactionData.id = transactions[editingTransactionId].id;
+                transactions[editingTransactionId] = transactionData;
+                showNotification('İşlem başarıyla güncellendi!', 'success');
+            } else {
+                transactionData.id = Date.now();
+                transactions.push(transactionData);
+                showNotification('İşlem başarıyla kaydedildi!', 'success');
+            }
+
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            
+            loadTransactionsTable();
+            loadAccountsList();
+            updateStats();
+            updateReports();
+            closeTransactionModal();
+        }
+
+        // Hesap kaydet
+        function saveAccount() {
+            const accountData = {
+                name: document.getElementById('accountName').value,
+                type: document.getElementById('accountType').value,
+                balance: parseFloat(document.getElementById('initialBalance').value) || 0,
+                currency: document.getElementById('accountCurrency').value,
+                description: document.getElementById('accountDescription').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!accountData.name || !accountData.type) {
+                showNotification('Lütfen hesap adı ve türünü giriniz!', 'error');
+                return;
+            }
+
+            if (editingAccountId !== null) {
+                accountData.id = accounts[editingAccountId].id;
+                accounts[editingAccountId] = accountData;
+                showNotification('Hesap başarıyla güncellendi!', 'success');
+            } else {
+                accountData.id = Date.now();
+                accounts.push(accountData);
+                showNotification('Hesap başarıyla eklendi!', 'success');
+            }
+
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            loadAccountsList();
+            updateStats();
+            closeAccountModal();
+        }
+
+        // Fatura kaydet
+        function saveInvoice() {
+            const invoiceData = {
+                invoiceNumber: document.getElementById('invoiceNumber').value,
+                date: document.getElementById('invoiceDate').value,
+                dueDate: document.getElementById('dueDate').value,
+                customerId: parseInt(document.getElementById('invoiceCustomer').value),
+                type: document.getElementById('invoiceType').value,
+                notes: document.getElementById('invoiceNotes').value,
+                createdAt: new Date().toISOString()
+            };
+
+            // Fatura kalemlerini topla
+            const itemRows = document.querySelectorAll('.invoice-item-row');
+            const items = [];
+            let subtotal = 0;
+
+            itemRows.forEach(row => {
+                const description = row.querySelector('.item-description').value;
+                const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                const total = quantity * price;
+
+                if (description && quantity > 0 && price > 0) {
+                    items.push({
+                        description,
+                        quantity,
+                        unitPrice: price,
+                        total
+                    });
+                    subtotal += total;
+                }
+            });
+
+            if (items.length === 0) {
+                showNotification('En az bir fatura kalemi eklemelisiniz!', 'error');
+                return;
+            }
+
+            if (!invoiceData.customerId) {
+                showNotification('Lütfen bir müşteri seçiniz!', 'error');
+                return;
+            }
+
+            const vatAmount = subtotal * 0.18;
+            const total = subtotal + vatAmount;
+
+            invoiceData.items = items;
+            invoiceData.subtotal = subtotal;
+            invoiceData.vatAmount = vatAmount;
+            invoiceData.total = total;
+            invoiceData.id = Date.now();
+
+            invoices.push(invoiceData);
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+
+            // Fatura tutarını gelir olarak ekle (satış faturası ise)
+            if (invoiceData.type === 'sales') {
+                const incomeTransaction = {
+                    id: Date.now() + 1,
+                    date: invoiceData.date,
+                    description: `Fatura Geliri - ${invoiceData.invoiceNumber}`,
+                    category: 'Satış Gelirleri',
+                    accountId: accounts.find(a => a.type === 'bank')?.id || accounts[0].id,
+                    type: 'income',
+                    amount: total,
+                    currency: 'TRY',
+                    notes: `Fatura No: ${invoiceData.invoiceNumber}`,
+                    createdAt: new Date().toISOString()
+                };
+
+                transactions.push(incomeTransaction);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+
+                // Hesap bakiyesini güncelle
+                const account = accounts.find(a => a.id === incomeTransaction.accountId);
+                if (account) {
+                    account.balance += total;
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+                }
+            }
+
+            showNotification('Fatura başarıyla oluşturuldu!', 'success');
+            loadTransactionsTable();
+            loadAccountsList();
+            updateStats();
+            updateReports();
+            closeInvoiceModal();
+        }
+
+        // Bütçe kaydet
+        function saveBudget() {
+            const budgetData = {
+                name: document.getElementById('budgetName').value,
+                period: document.getElementById('budgetPeriod').value,
+                startDate: document.getElementById('budgetStartDate').value,
+                endDate: document.getElementById('budgetEndDate').value,
+                category: document.getElementById('budgetCategory').value,
+                plannedAmount: parseFloat(document.getElementById('budgetAmount').value),
+                spentAmount: 0,
+                threshold: parseInt(document.getElementById('budgetThreshold').value),
+                description: document.getElementById('budgetDescription').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!budgetData.name || !budgetData.period || !budgetData.plannedAmount) {
+                showNotification('Lütfen tüm gerekli alanları doldurunuz!', 'error');
+                return;
+            }
+
+            // Mevcut harcamaları hesapla
+            const categoryExpenses = transactions
+                .filter(t => t.type === 'expense' && 
+                           t.date >= budgetData.startDate && 
+                           t.date <= budgetData.endDate &&
+                           t.category && t.category.toLowerCase().includes(budgetData.category.toLowerCase()))
+                .reduce((sum, t) => sum + (t.currency === 'TRY' ? t.amount : t.amount * 32), 0);
+
+            budgetData.spentAmount = categoryExpenses;
+            budgetData.id = Date.now();
+
+            budgets.push(budgetData);
+            localStorage.setItem('budgets', JSON.stringify(budgets));
+
+            showNotification('Bütçe başarıyla oluşturuldu!', 'success');
+            updateReports();
+            closeBudgetModal();
+        }
+
+        // Hesap bakiyelerini güncelle
+        function updateAccountBalances(transaction) {
+            const account = accounts.find(a => a.id === transaction.accountId);
+            
+            if (account) {
+                let amount = transaction.amount;
+                
+                // Döviz çevirimi (basit)
+                if (account.currency !== transaction.currency) {
+                    if (transaction.currency === 'USD' && account.currency === 'TRY') {
+                        amount *= 32;
+                    } else if (transaction.currency === 'EUR' && account.currency === 'TRY') {
+                        amount *= 35;
+                    } else if (transaction.currency === 'TRY' && account.currency === 'USD') {
+                        amount /= 32;
+                    } else if (transaction.currency === 'TRY' && account.currency === 'EUR') {
+                        amount /= 35;
+                    }
+                }
+
+                if (transaction.type === 'income') {
+                    account.balance += amount;
+                } else if (transaction.type === 'expense') {
+                    account.balance -= amount;
+                } else if (transaction.type === 'transfer') {
+                    account.balance -= amount;
+                    
+                    // Hedef hesabı güncelle
+                    const targetAccount = accounts.find(a => a.id === transaction.targetAccountId);
+                    if (targetAccount) {
+                        let targetAmount = amount;
+                        
+                        // Hedef hesap için döviz çevirimi
+                        if (account.currency !== targetAccount.currency) {
+                            if (account.currency === 'USD' && targetAccount.currency === 'TRY') {
+                                targetAmount *= 32;
+                            } else if (account.currency === 'EUR' && targetAccount.currency === 'TRY') {
+                                targetAmount *= 35;
+                            } else if (account.currency === 'TRY' && targetAccount.currency === 'USD') {
+                                targetAmount /= 32;
+                            } else if (account.currency === 'TRY' && targetAccount.currency === 'EUR') {
+                                targetAmount /= 35;
+                            }
+                        }
+                        
+                        targetAccount.balance += targetAmount;
+                    }
+                }
+            }
+        }
+
+        // İşlem düzenle
+        function editTransaction(index) {
+            editingTransactionId = index;
+            const transaction = transactions[index];
+            
+            document.getElementById('transactionModalTitle').textContent = 'İşlemi Düzenle';
+            document.getElementById('transactionType').value = transaction.type;
+            document.getElementById('transactionDate').value = transaction.date;
+            document.getElementById('transactionDescription').value = transaction.description;
+            document.getElementById('transactionAccount').value = transaction.accountId;
+            document.getElementById('transactionAmount').value = transaction.amount;
+            document.getElementById('transactionCurrency').value = transaction.currency;
+            document.getElementById('transactionNotes').value = transaction.notes || '';
+            
+            updateTransactionForm();
+            document.getElementById('transactionCategory').value = transaction.category || '';
+            
+            if (transaction.targetAccountId) {
+                document.getElementById('targetAccount').value = transaction.targetAccountId;
+            }
+            
+            document.getElementById('transactionModal').style.display = 'block';
+        }
+
+        // Hesap düzenle
+        function editAccount(index) {
+            editingAccountId = index;
+            const account = accounts[index];
+            
+            document.getElementById('accountModalTitle').textContent = 'Hesabı Düzenle';
+            document.getElementById('accountName').value = account.name;
+            document.getElementById('accountType').value = account.type;
+            document.getElementById('initialBalance').value = account.balance;
+            document.getElementById('accountCurrency').value = account.currency;
+            document.getElementById('accountDescription').value = account.description || '';
+            
+            document.getElementById('accountModal').style.display = 'block';
+        }
+
+        // İşlem görüntüle
+        function viewTransaction(index) {
+            const transaction = transactions[index];
+            const account = accounts.find(a => a.id === transaction.accountId);
+            const accountName = account ? account.name : 'Bilinmeyen Hesap';
+            const typeInfo = getTransactionTypeInfo(transaction.type);
+            
+            let targetAccountInfo = '';
+            if (transaction.targetAccountId) {
+                const targetAccount = accounts.find(a => a.id === transaction.targetAccountId);
+                targetAccountInfo = `<p><strong>Hedef Hesap:</strong> ${targetAccount ? targetAccount.name : 'Bilinmeyen'}</p>`;
+            }
+            
+            const content = `
+                <div style="background: rgba(255,255,255,0.95); padding: 20px; border-radius: 15px;">
+                    <h2 style="color: #2c3e50; margin-bottom: 20px;">İşlem Detayları</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <p><strong>Tarih:</strong> ${formatDate(transaction.date)}</p>
+                            <p><strong>Açıklama:</strong> ${transaction.description}</p>
+                            <p><strong>Kategori:</strong> ${transaction.category || '-'}</p>
+                            <p><strong>Hesap:</strong> ${accountName}</p>
+                            ${targetAccountInfo}
+                        </div>
+                        <div>
+                            <p><strong>İşlem Türü:</strong> <span class="transaction-type ${typeInfo.class}">${typeInfo.text}</span></p>
+                            <p><strong>Tutar:</strong> <span style="font-size: 1.3rem; font-weight: bold; color: ${transaction.type === 'income' ? '#27ae60' : transaction.type === 'expense' ? '#e74c3c' : '#3498db'};">${formatCurrency(transaction.amount, transaction.currency)}</span></p>
+                            <p><strong>Para Birimi:</strong> ${transaction.currency}</p>
+                        </div>
+                    </div>
+
+                    ${transaction.notes ? `<div style="margin-top: 15px; padding: 15px; background: rgba(52, 152, 219, 0.1); border-radius: 8px;"><strong>Notlar:</strong><br>${transaction.notes}</div>` : ''}
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="closeViewModal()">Kapat</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal('İşlem Detayları', content);
+        }
+
+        // İşlem sil
+        function deleteTransaction(index) {
+            const transaction = transactions[index];
+            if (confirm(`"${transaction.description}" işlemini silmek istediğinizden emin misiniz?`)) {
+                // Hesap bakiyesini geri al
+                const account = accounts.find(a => a.id === transaction.accountId);
+                if (account) {
+                    let amount = transaction.amount;
+                    
+                    if (transaction.type === 'income') {
+                        account.balance -= amount;
+                    } else if (transaction.type === 'expense') {
+                        account.balance += amount;
+                    } else if (transaction.type === 'transfer') {
+                        account.balance += amount;
+                        
+                        const targetAccount = accounts.find(a => a.id === transaction.targetAccountId);
+                        if (targetAccount) {
+                            targetAccount.balance -= amount;
+                        }
+                    }
+                }
+                
+                transactions.splice(index, 1);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                
+                loadTransactionsTable();
+                loadAccountsList();
+                updateStats();
+                updateReports();
+                showNotification('İşlem başarıyla silindi!', 'success');
+            }
+        }
+
+        // Hesap sil
+        function deleteAccount(index) {
+            const account = accounts[index];
+            
+            // Bu hesaba ait işlem var mı kontrol et
+            const hasTransactions = transactions.some(t => t.accountId === account.id || t.targetAccountId === account.id);
+            
+            if (hasTransactions) {
+                showNotification('Bu hesaba ait işlemler bulunduğu için silinemez!', 'error');
+                return;
+            }
+            
+            if (confirm(`"${account.name}" hesabını silmek istediğinizden emin misiniz?`)) {
+                accounts.splice(index, 1);
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                loadAccountsList();
+                updateStats();
+                showNotification('Hesap başarıyla silindi!', 'success');
+            }
+        }
+
+        // İşlem arama
+        function searchTransactions() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#transactionsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // İşlem filtreleme
+        function filterTransactions() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const monthFilter = document.getElementById('monthFilter').value;
+            const rows = document.querySelectorAll('#transactionsTableBody tr');
+            
+            rows.forEach((row, index) => {
+                const transaction = transactions[index];
+                let showRow = true;
+                
+                if (typeFilter && transaction.type !== typeFilter) {
+                    showRow = false;
+                }
+                
+                if (monthFilter && !transaction.date.startsWith(monthFilter)) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Fatura önizleme
+        function previewInvoice() {
+            const invoiceNumber = document.getElementById('invoiceNumber').value;
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            const customerId = document.getElementById('invoiceCustomer').value;
+            const customer = customers.find(c => c.id == customerId);
+            
+            if (!customer) {
+                showNotification('Lütfen bir müşteri seçiniz!', 'error');
+                return;
+            }
+
+            const itemRows = document.querySelectorAll('.invoice-item-row');
+            let itemsHtml = '';
+            let subtotal = 0;
+
+            itemRows.forEach(row => {
+                const description = row.querySelector('.item-description').value;
+                const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                const total = quantity * price;
+
+                if (description && quantity > 0 && price > 0) {
+                    itemsHtml += `
+                        <tr>
+                            <td>${description}</td>
+                            <td style="text-align: center;">${quantity}</td>
+                            <td style="text-align: right;">${formatCurrency(price, 'TRY')}</td>
+                            <td style="text-align: right;"><strong>${formatCurrency(total, 'TRY')}</strong></td>
+                        </tr>
+                    `;
+                    subtotal += total;
+                }
+            });
+
+            const vatAmount = subtotal * 0.18;
+            const total = subtotal + vatAmount;
+
+            const content = `
+                <div class="invoice-container">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #2c3e50;">FATURA</h1>
+                        <p style="font-size: 1.2rem; color: #7f8c8d;">${invoiceNumber}</p>
+                    </div>
+                    
+                    <div class="invoice-header">
+                        <div>
+                            <h3>Şirket Bilgileri</h3>
+                            <p><strong>ABC Şirketi Ltd. Şti.</strong></p>
+                            <p>Maslak Mahallesi, İş Merkezi No:123</p>
+                            <p>Sarıyer/İstanbul</p>
+                            <p>Tel: 0212 555 00 00</p>
+                            <p>Vergi No: 1234567890</p>
+                        </div>
+                        <div>
+                            <h3>Müşteri Bilgileri</h3>
+                            <p><strong>${customer.name}</strong></p>
+                            <p>${customer.address || 'Adres bilgisi yok'}</p>
+                            <p>Tel: ${customer.phone || 'Telefon bilgisi yok'}</p>
+                            <p>Vergi No: ${customer.taxNumber || 'Vergi no bilgisi yok'}</p>
+                        </div>
+                    </div>
+
+                    <div style="margin: 20px 0;">
+                        <p><strong>Fatura Tarihi:</strong> ${formatDate(invoiceDate)}</p>
+                        <p><strong>Vade Tarihi:</strong> ${document.getElementById('dueDate').value ? formatDate(document.getElementById('dueDate').value) : 'Belirtilmemiş'}</p>
+                    </div>
+
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Açıklama</th>
+                                <th style="text-align: center;">Miktar</th>
+                                <th style="text-align: right;">Birim Fiyat</th>
+                                <th style="text-align: right;">Toplam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                        <div style="width: 300px;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd;">
+                                <span>Ara Toplam:</span>
+                                <span>${formatCurrency(subtotal, 'TRY')}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd;">
+                                <span>KDV (%18):</span>
+                                <span>${formatCurrency(vatAmount, 'TRY')}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px 0; font-weight: bold; font-size: 1.2rem; border-top: 2px solid #2c3e50;">
+                                <span>TOPLAM:</span>
+                                <span>${formatCurrency(total, 'TRY')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${document.getElementById('invoiceNotes').value ? `<div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px;"><strong>Notlar:</strong><br>${document.getElementById('invoiceNotes').value}</div>` : ''}
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="printInvoice()" style="margin-right: 10px;">🖨️ Yazdır</button>
+                        <button class="btn btn-secondary" onclick="closeViewModal()">Kapat</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal('Fatura Önizleme', content);
+        }
+
+        // Fatura yazdır
+        function printInvoice() {
+            window.print();
+        }
+
+        // Finansal rapor dışa aktar
+        function exportFinancialReport() {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            
+            let csvContent = 'Tarih,Açıklama,Kategori,Hesap,Tür,Tutar,Para Birimi,Notlar\n';
+            
+            transactions.forEach(transaction => {
+                const account = accounts.find(a => a.id === transaction.accountId);
+                const accountName = account ? account.name : 'Bilinmeyen';
+                const typeText = getTransactionTypeInfo(transaction.type).text;
+                
+                csvContent += `"${transaction.date}","${transaction.description}","${transaction.category || ''}","${accountName}","${typeText}","${transaction.amount}","${transaction.currency}","${transaction.notes || ''}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `finansal_rapor_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Finansal rapor başarıyla dışa aktarıldı!', 'success');
+        }
+
+                // Tab gösterme
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Yardımcı fonksiyonlar
+        function getTransactionTypeInfo(type) {
+            const types = {
+                'income': { class: 'type-income', text: 'Gelir' },
+                'expense': { class: 'type-expense', text: 'Gider' },
+                'transfer': { class: 'type-transfer', text: 'Transfer' }
+            };
+            return types[type] || { class: 'type-income', text: 'Bilinmeyen' };
+        }
+
+        function getAccountTypeText(type) {
+            const types = {
+                'cash': 'Nakit',
+                'bank': 'Banka Hesabı',
+                'credit': 'Kredi Kartı',
+                'investment': 'Yatırım',
+                'other': 'Diğer'
+            };
+            return types[type] || 'Bilinmeyen';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR');
+        }
+
+        function formatCurrency(amount, currency = 'TRY') {
+            const symbols = {
+                'TRY': '₺',
+                'USD': '$',
+                'EUR': '€'
+            };
+            
+            return `${symbols[currency] || '₺'}${amount.toLocaleString('tr-TR', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+            })}`;
+        }
+
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>${title}</h2>
+                        <span class="close" onclick="closeViewModal()">&times;</span>
+                    </div>
+                    ${content}
+                </div>
+            `;
+            document.body.appendChild(modal);
+            window.currentViewModal = modal;
+        }
+
+        function closeViewModal() {
+            if (window.currentViewModal) {
+                document.body.removeChild(window.currentViewModal);
+                window.currentViewModal = null;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            
+            switch(type) {
+                case 'success':
+                    notification.style.background = '#27ae60';
+                    break;
+                case 'error':
+                    notification.style.background = '#e74c3c';
+                    break;
+                case 'warning':
+                    notification.style.background = '#f39c12';
+                    break;
+                default:
+                    notification.style.background = '#3498db';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Modal dışına tıklayınca kapatma
+        window.onclick = function(event) {
+            const transactionModal = document.getElementById('transactionModal');
+            const accountModal = document.getElementById('accountModal');
+            const invoiceModal = document.getElementById('invoiceModal');
+            const budgetModal = document.getElementById('budgetModal');
+            
+            if (event.target == transactionModal) {
+                closeTransactionModal();
+            }
+            if (event.target == accountModal) {
+                closeAccountModal();
+            }
+            if (event.target == invoiceModal) {
+                closeInvoiceModal();
+            }
+            if (event.target == budgetModal) {
+                closeBudgetModal();
+            }
+        }
+
+        // Klavye kısayolları
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + N: Yeni işlem
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                openTransactionModal();
+            }
+            
+            // Ctrl + H: Yeni hesap
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                openAccountModal();
+            }
+            
+            // Ctrl + F: Yeni fatura
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                openInvoiceModal();
+            }
+            
+            // Ctrl + B: Yeni bütçe
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                openBudgetModal();
+            }
+            
+            // ESC: Modal kapat
+            if (e.key === 'Escape') {
+                closeTransactionModal();
+                closeAccountModal();
+                closeInvoiceModal();
+                closeBudgetModal();
+                closeViewModal();
+            }
+        });
+
+        // Otomatik kaydetme (her 30 saniyede bir)
+        setInterval(function() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+            localStorage.setItem('budgets', JSON.stringify(budgets));
+        }, 30000);
+
+        // Sayfa kapatılmadan önce uyarı
+        window.addEventListener('beforeunload', function(e) {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+            localStorage.setItem('budgets', JSON.stringify(budgets));
+        });
+
+        // Bütçe uyarıları kontrol et
+        function checkBudgetAlerts() {
+            budgets.forEach(budget => {
+                const percentage = budget.plannedAmount > 0 ? (budget.spentAmount / budget.plannedAmount) * 100 : 0;
+                
+                if (percentage >= 100) {
+                    showNotification(`⚠️ "${budget.name}" bütçesi aşıldı! (%${percentage.toFixed(1)})`, 'error');
+                } else if (percentage >= budget.threshold) {
+                    showNotification(`⚠️ "${budget.name}" bütçesi eşiğe yaklaştı! (%${percentage.toFixed(1)})`, 'warning');
+                }
+            });
+        }
+
+        // Sayfa yüklendiğinde bütçe uyarılarını kontrol et
+        setTimeout(checkBudgetAlerts, 2000);
+
+        // Gelişmiş arama fonksiyonu
+        function advancedSearch() {
+            const searchModal = `
+                <div style="background: rgba(255,255,255,0.95); padding: 20px; border-radius: 15px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px;">Gelişmiş Arama</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi</label>
+                            <input type="date" id="searchStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Bitiş Tarihi</label>
+                            <input type="date" id="searchEndDate">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>Minimum Tutar</label>
+                            <input type="number" id="searchMinAmount" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Maksimum Tutar</label>
+                            <input type="number" id="searchMaxAmount" min="0" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>İşlem Türü</label>
+                            <select id="searchType">
+                                <option value="">Tümü</option>
+                                <option value="income">Gelir</option>
+                                <option value="expense">Gider</option>
+                                <option value="transfer">Transfer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Hesap</label>
+                            <select id="searchAccount">
+                                <option value="">Tüm Hesaplar</option>
+                                ${accounts.map(account => `<option value="${account.id}">${account.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Açıklama/Not İçinde Ara</label>
+                        <input type="text" id="searchKeyword" placeholder="Anahtar kelime...">
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button class="btn btn-primary" onclick="performAdvancedSearch()" style="flex: 1;">🔍 Ara</button>
+                        <button class="btn btn-secondary" onclick="clearAdvancedSearch()" style="flex: 1;">🗑️ Temizle</button>
+                        <button class="btn btn-secondary" onclick="closeViewModal()">❌ Kapat</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal('Gelişmiş Arama', searchModal);
+        }
+
+        // Gelişmiş arama gerçekleştir
+        function performAdvancedSearch() {
+            const startDate = document.getElementById('searchStartDate').value;
+            const endDate = document.getElementById('searchEndDate').value;
+            const minAmount = parseFloat(document.getElementById('searchMinAmount').value) || 0;
+            const maxAmount = parseFloat(document.getElementById('searchMaxAmount').value) || Infinity;
+            const type = document.getElementById('searchType').value;
+            const accountId = document.getElementById('searchAccount').value;
+            const keyword = document.getElementById('searchKeyword').value.toLowerCase();
+            
+            const rows = document.querySelectorAll('#transactionsTableBody tr');
+            let visibleCount = 0;
+            
+            rows.forEach((row, index) => {
+                const transaction = transactions[index];
+                let show = true;
+                
+                // Tarih kontrolü
+                if (startDate && transaction.date < startDate) show = false;
+                if (endDate && transaction.date > endDate) show = false;
+                
+                // Tutar kontrolü
+                if (transaction.amount < minAmount || transaction.amount > maxAmount) show = false;
+                
+                // Tür kontrolü
+                if (type && transaction.type !== type) show = false;
+                
+                // Hesap kontrolü
+                if (accountId && transaction.accountId != accountId) show = false;
+                
+                // Anahtar kelime kontrolü
+                if (keyword) {
+                    const searchText = `${transaction.description} ${transaction.notes || ''}`.toLowerCase();
+                    if (!searchText.includes(keyword)) show = false;
+                }
+                
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+            
+            showNotification(`${visibleCount} işlem bulundu.`, 'success');
+            closeViewModal();
+        }
+
+        // Gelişmiş aramayı temizle
+        function clearAdvancedSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
+            
+            const rows = document.querySelectorAll('#transactionsTableBody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            
+            closeViewModal();
+            showNotification('Arama filtreleri temizlendi.', 'success');
+        }
+
+        // Hızlı işlem ekleme fonksiyonları
+        function quickIncomeTransaction() {
+            openTransactionModal();
+            document.getElementById('transactionType').value = 'income';
+            updateTransactionForm();
+            document.getElementById('transactionCategory').value = 'Satış Gelirleri';
+        }
+
+        function quickExpenseTransaction() {
+            openTransactionModal();
+            document.getElementById('transactionType').value = 'expense';
+            updateTransactionForm();
+            document.getElementById('transactionCategory').value = 'Ofis Giderleri';
+        }
+
+        function quickTransferTransaction() {
+            openTransactionModal();
+            document.getElementById('transactionType').value = 'transfer';
+            updateTransactionForm();
+        }
+
+        // Toplu işlemler
+        function bulkDeleteTransactions() {
+            if (confirm('Seçili işlemleri silmek istediğinizden emin misiniz?')) {
+                // Bu özellik için checkbox'lar eklenebilir
+                showNotification('Toplu silme özelliği geliştirme aşamasında!', 'info');
+            }
+        }
+
+        // Veri yedekleme
+        function backupData() {
+            const backupData = {
+                transactions,
+                accounts,
+                invoices,
+                budgets,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `finans_yedek_${new Date().toISOString().split('T')[0]}.json`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Veriler başarıyla yedeklendi!', 'success');
+        }
+
+        // Veri geri yükleme
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const backupData = JSON.parse(e.target.result);
+                            
+                            if (confirm('Mevcut veriler silinecek ve yedek veriler yüklenecek. Onaylıyor musunuz?')) {
+                                transactions = backupData.transactions || [];
+                                accounts = backupData.accounts || [];
+                                invoices = backupData.invoices || [];
+                                budgets = backupData.budgets || [];
+                                
+                                localStorage.setItem('transactions', JSON.stringify(transactions));
+                                localStorage.setItem('accounts', JSON.stringify(accounts));
+                                localStorage.setItem('invoices', JSON.stringify(invoices));
+                                localStorage.setItem('budgets', JSON.stringify(budgets));
+                                
+                                loadTransactionsTable();
+                                loadAccountsList();
+                                updateStats();
+                                updateReports();
+                                
+                                showNotification('Veriler başarıyla geri yüklendi!', 'success');
+                            }
+                        } catch (error) {
+                            showNotification('Yedek dosyası okunamadı!', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+
+        // Sağ tık menüsü (context menu) - gelecek özellik
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('#transactionsTableBody tr')) {
+                e.preventDefault();
+                // Sağ tık menüsü gösterilebilir
+            }
+        });
+
+        // Performans optimizasyonu için debounce fonksiyonu
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Arama fonksiyonunu optimize et
+        const debouncedSearch = debounce(searchTransactions, 300);
+        document.getElementById('searchInput').addEventListener('keyup', debouncedSearch);
+
+        // Sayfa görünürlük değişikliklerini izle
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Sayfa gizlendiğinde verileri kaydet
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+                localStorage.setItem('invoices', JSON.stringify(invoices));
+                localStorage.setItem('budgets', JSON.stringify(budgets));
+            }
+        });
+
+        // Konsol komutları (geliştirici araçları için)
+        window.erpFinance = {
+            exportData: () => {
+                console.log('Transactions:', transactions);
+                console.log('Accounts:', accounts);
+                console.log('Invoices:', invoices);
+                console.log('Budgets:', budgets);
+            },
+            clearAllData: () => {
+                if (confirm('TÜM VERİLER SİLİNECEK! Emin misiniz?')) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            },
+            addSampleData: () => {
+                initializeData();
+                location.reload();
+            }
+        };
+
+        console.log('💰 Finans ve Muhasebe Modülü yüklendi!');
+        console.log('💡 Konsol komutları: window.erpFinance');
+    </script>
+</body>
+</html>
+
